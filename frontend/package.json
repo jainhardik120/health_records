@@ -9,8 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@types/pg": "^8.11.5",
+    "@vercel/postgres": "^0.8.0",
     "ethers": "^6.11.1",
     "next": "14.1.4",
+    "pg": "^8.11.5",
+    "pg-format": "^1.0.4",
     "react": "^18",
     "react-dom": "^18",
     "web3modal": "^1.9.12"
