@@ -1,9 +1,12 @@
 'use client'
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import useSigner from "../state/signer";
 
 export default function NavBar() {
+
+	const router = useRouter();
 
 	const { address, connectWallet, loading } = useSigner();
 
@@ -28,12 +31,23 @@ export default function NavBar() {
 			getType();
 		}
 	}, [address]);
+
+	const headerButtonClick = async () => {
+		if(userType==0){
+			router.push("/register");
+		}else if(userType==1){
+			router.push("/d");
+		}else if (userType==2){
+			router.push("/p");
+		}
+	}
+
 	return (
 		<div className="fixed top-0 w-full h-16 bg-black flex content-center items-center text-white px-10">
 			<div className='flex-auto h-fit'>
 				<div className="w-fit h-fit">
 					Health Records App
-					<button className="mx-4">
+					<button className="mx-4" onClick={headerButtonClick} disabled={loading || userType == -1}>
 						{(userType == -1) && "Loading"}
 						{(userType == 0) && "Register"}
 						{(userType == 1) && "Doctor Portal"}
