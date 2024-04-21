@@ -10,7 +10,6 @@ export const dynamic = 'force-dynamic'
 
 const pinata = new pinataSDK({ pinataJWTKey: process.env.PINATA_JWT_KEY });
 
-
 export const config = {
   api: {
     bodyParser: false,
