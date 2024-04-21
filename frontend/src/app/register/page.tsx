@@ -111,7 +111,7 @@ const PatientRegistration = () => {
       contact,
       address
     };
-    fetch('api/patient-registration', {
+    fetch('api/auth/patient-registration', {
       method: 'POST',
       body: JSON.stringify(formData),
       headers: {
