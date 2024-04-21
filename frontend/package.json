@@ -9,9 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@pinata/sdk": "^2.1.0",
+    "@types/formidable": "^3.4.5",
     "@types/pg": "^8.11.5",
     "@vercel/postgres": "^0.8.0",
+    "crypto": "^1.0.1",
     "ethers": "^6.11.1",
+    "formidable": "^3.5.1",
     "next": "14.1.4",
     "pg": "^8.11.5",
     "pg-format": "^1.0.4",

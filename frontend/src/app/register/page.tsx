@@ -2,58 +2,146 @@
 
 import React, { useState } from 'react';
 import Button from '../components/Button';
-import Input from '../components/Input';
+import useSigner from '../state/signer';
+
+interface TextInputProps {
+  label: string;
+  id: string;
+  value: string;
+  onChange: (value: string) => void;
+}
+
+interface SubmitButtonProps {
+  label: string;
+  onClick: () => void;
+}
+
+
+const TextInput: React.FC<TextInputProps> = ({ label, id, value, onChange }) => {
+  return (
+    <div className="mb-4">
+      <label className="block text-sm font-bold mb-2" htmlFor={id}>
+        {label}
+      </label>
+      <input
+        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        id={id}
+        type="text"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
+    </div>
+  );
+};
+
+const SubmitButton: React.FC<SubmitButtonProps> = ({ label, onClick }) => {
+  return (
+    <button
+      onClick={onClick}
+      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+      type="button"
+    >
+      {label}
+    </button>
+  );
+};
+
+const DoctorRegistration = () => {
+  const { address } = useSigner();
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [specialization, setSpecialization] = useState('');
+  const [clinicAddress, setClinicAddress] = useState('');
+  const [clinicContact, setClinicContact] = useState('');
+
+  const handleSubmit = () => {
+    const formData = {
+      firstName,
+      lastName,
+      email,
+      specialization,
+      clinicAddress,
+      clinicContact,
+      address
+    };
+    fetch('api/auth/doctor-registration', {
+      method: 'POST',
+      body: JSON.stringify(formData),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error('Error:', error));
+  };
+
+  return (
+    <div>
+      <TextInput label="First Name" id="firstName" value={firstName} onChange={setFirstName} />
+      <TextInput label="Last Name" id="lastName" value={lastName} onChange={setLastName} />
+      <TextInput label="Email" id="email" value={email} onChange={setEmail} />
+      <TextInput label="Specialization" id="specialization" value={specialization} onChange={setSpecialization} />
+      <TextInput label="Clinic Address" id="clinicAddress" value={clinicAddress} onChange={setClinicAddress} />
+      <TextInput label="Clinic Contact Number" id="clinicContact" value={clinicContact} onChange={setClinicContact} />
+      <SubmitButton label="Register" onClick={handleSubmit} />
+    </div>
+  );
+};
+
+const PatientRegistration = () => {
+  const { address } = useSigner();
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [dob, setDOB] = useState('');
+  const [gender, setGender] = useState('');
+  const [paddress, setAddress] = useState('');
+  const [contact, setContact] = useState('');
+
+  const handleSubmit = () => {
+    const formData = {
+      firstName,
+      lastName,
+      email,
+      dob,
+      gender,
+      paddress,
+      contact,
+      address
+    };
+    fetch('api/patient-registration', {
+      method: 'POST',
+      body: JSON.stringify(formData),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error('Error:', error));
+  };
+
+  return (
+    <div>
+      <TextInput label="First Name" id="firstName" value={firstName} onChange={setFirstName} />
+      <TextInput label="Last Name" id="lastName" value={lastName} onChange={setLastName} />
+      <TextInput label="Email" id="email" value={email} onChange={setEmail} />
+      <TextInput label="Date of Birth" id="dob" value={dob} onChange={setDOB} />
+      <TextInput label="Gender" id="gender" value={gender} onChange={setGender} />
+      <TextInput label="Address" id="address" value={paddress} onChange={setAddress} />
+      <TextInput label="Contact Number" id="contact" value={contact} onChange={setContact} />
+      <SubmitButton label="Register" onClick={handleSubmit} />
+    </div>
+  );
+};
+
 
 const RegistrationPage = () => {
   const [userType, setUserType] = useState<string>("");
   const handleUserTypeSelect = (type: string) => {
     setUserType(type);
-  };
-
-  const [fullName, setFullName] = useState('');
-  const [dateOfBirth, setDateOfBirth] = useState('');
-  const [gender, setGender] = useState('');
-  const [contactNumber, setContactNumber] = useState('');
-  const [email, setEmail] = useState('');
-  const [address, setAddress] = useState('');
-  const [emergencyContactName, setEmergencyContactName] = useState('');
-  const [emergencyContactRelationship, setEmergencyContactRelationship] = useState('');
-  const [emergencyContactNumber, setEmergencyContactNumber] = useState('');
-  const [insuranceProvider, setInsuranceProvider] = useState('');
-  const [policyNumber, setPolicyNumber] = useState('');
-  const [medicalHistory, setMedicalHistory] = useState('');
-  const [primaryCarePhysician, setPrimaryCarePhysician] = useState('');
-  const [preferredPharmacy, setPreferredPharmacy] = useState('');
-  const [medicalLicenseNumber, setMedicalLicenseNumber] = useState('');
-  const [specialization, setSpecialization] = useState('');
-  const [workHistory, setWorkHistory] = useState('');
-  const [educationBackground, setEducationBackground] = useState('');
-  const [professionalAffiliations, setProfessionalAffiliations] = useState('');
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    console.log({
-      userType,
-      fullName,
-      dateOfBirth,
-      gender,
-      contactNumber,
-      email,
-      address,
-      emergencyContactName,
-      emergencyContactRelationship,
-      emergencyContactNumber,
-      insuranceProvider,
-      policyNumber,
-      medicalHistory,
-      primaryCarePhysician,
-      preferredPharmacy,
-      medicalLicenseNumber,
-      specialization,
-      workHistory,
-      educationBackground,
-      professionalAffiliations,
-    });
   };
 
   return (
@@ -72,33 +160,16 @@ const RegistrationPage = () => {
       {userType && (
         <div className="flex flex-col items-center">
           <h1 className="text-3xl font-bold mb-6">Enter Your Personal Details</h1>
-          <form className="flex flex-col items-center" onSubmit={handleSubmit}>
-            <Input type="text" value={fullName} onChange={(value) => { setFullName(value) }} label='Full Name' />
-            <Input type ="date" value={dateOfBirth} onChange={(value)=>{setDateOfBirth(value)}} label='Date of Birth'/>
-            <label className="mb-4">
-              Gender:
-              <select
-                className="border rounded px-2 py-1 ml-2"
-                value={gender}
-                onChange={(e) => setGender(e.target.value)}
-              >
-                <option value="">Select Gender</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-              </select>
-            </label>
-            <Input type="text" value={contactNumber} onChange={(value) => { setContactNumber(value) }} label='Contact Number' />
-            <Input type="email" value={email} onChange={(value) => { setEmail(value) }} label='Email' />
-            <Input type="address" value={address} onChange={(value) => { setAddress(value) }} label='Address' />
-            
-            <button
-              type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            >
-              Submit
-            </button>
-          </form>
+          {
+            userType == "patient" && (
+              <PatientRegistration />
+            )
+          }
+          {
+            userType == "doctor" && (
+              <DoctorRegistration />
+            )
+          }
         </div>
       )}
     </div>
