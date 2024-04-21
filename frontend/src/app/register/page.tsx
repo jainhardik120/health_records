@@ -3,48 +3,7 @@
 import React, { useState } from 'react';
 import Button from '../components/Button';
 import useSigner from '../state/signer';
-
-interface TextInputProps {
-  label: string;
-  id: string;
-  value: string;
-  onChange: (value: string) => void;
-}
-
-interface SubmitButtonProps {
-  label: string;
-  onClick: () => void;
-}
-
-
-const TextInput: React.FC<TextInputProps> = ({ label, id, value, onChange }) => {
-  return (
-    <div className="mb-4">
-      <label className="block text-sm font-bold mb-2" htmlFor={id}>
-        {label}
-      </label>
-      <input
-        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        id={id}
-        type="text"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-      />
-    </div>
-  );
-};
-
-const SubmitButton: React.FC<SubmitButtonProps> = ({ label, onClick }) => {
-  return (
-    <button
-      onClick={onClick}
-      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-      type="button"
-    >
-      {label}
-    </button>
-  );
-};
+import TextInput from '../components/TextInput';
 
 const DoctorRegistration = () => {
   const { address } = useSigner();
@@ -85,7 +44,9 @@ const DoctorRegistration = () => {
       <TextInput label="Specialization" id="specialization" value={specialization} onChange={setSpecialization} />
       <TextInput label="Clinic Address" id="clinicAddress" value={clinicAddress} onChange={setClinicAddress} />
       <TextInput label="Clinic Contact Number" id="clinicContact" value={clinicContact} onChange={setClinicContact} />
-      <SubmitButton label="Register" onClick={handleSubmit} />
+      <Button onClick={handleSubmit} >
+        Register
+      </Button>
     </div>
   );
 };
@@ -132,7 +93,9 @@ const PatientRegistration = () => {
       <TextInput label="Gender" id="gender" value={gender} onChange={setGender} />
       <TextInput label="Address" id="address" value={paddress} onChange={setAddress} />
       <TextInput label="Contact Number" id="contact" value={contact} onChange={setContact} />
-      <SubmitButton label="Register" onClick={handleSubmit} />
+      <Button onClick={handleSubmit} >
+        Register
+      </Button>
     </div>
   );
 };
