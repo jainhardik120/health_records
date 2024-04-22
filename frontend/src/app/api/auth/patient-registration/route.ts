@@ -24,6 +24,7 @@ export async function POST(request: Request) {
 
     return new Response(JSON.stringify({ success: true }), { status: 201 });
   } catch (error) {
+    console.log(error);
     return new Response(JSON.stringify(error), { status: 500 });
   }
 }
