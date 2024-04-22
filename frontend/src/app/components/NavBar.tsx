@@ -26,7 +26,6 @@ export default function NavBar() {
 				console.error('Error fetching user type:', error);
 			}
 		};
-
 		if (address !== undefined && address.length > 0) {
 			getType();
 		}
