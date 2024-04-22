@@ -4,6 +4,7 @@ import { randomBytes } from 'crypto';
 
 export async function POST(request: Request) {
   try {
+    // console.log("Hyy");
     const body = await request.json();
     const { address, firstName, lastName, email, dob, gender, paddress, contact } = body;
     const existingPatient = await sql`SELECT * FROM patient WHERE address = ${address}`;

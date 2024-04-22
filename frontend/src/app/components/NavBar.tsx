@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import useSigner from "../state/signer";
+import "../styles/navbar.css";
 
 export default function NavBar() {
 
@@ -10,14 +11,15 @@ export default function NavBar() {
 
 	const { address, connectWallet, loading } = useSigner();
 
-	const [userType, setUserType] = useState(-1);
+	const [userType, setUserType] = useState(0);
 
 	useEffect(() => {
 		const getType = async () => {
 			try {
 				const response = await fetch(`/api/auth/${address}`);
 				if (!response.ok) {
-					throw new Error('Failed to fetch user type');
+					setUserType(0);
+					return;
 				}
 				const data = await response.json();
 				const userType = data.isNew ? 0 : data.type;
@@ -32,32 +34,29 @@ export default function NavBar() {
 	}, [address]);
 
 	const headerButtonClick = async () => {
-		if(userType==0){
+		if (userType == 0) {
 			router.push("/register");
-		}else if(userType==1){
+		} else if (userType == 1) {
 			router.push("/d");
-		}else if (userType==2){
+		} else if (userType == 2) {
 			router.push("/p");
 		}
 	}
-
+	
 	return (
-		<div className="fixed top-0 w-full h-16 bg-black flex content-center items-center text-white px-10">
-			<div className='flex-auto h-fit'>
-				<div className="w-fit h-fit">
-					Health Records App
-					<button className="mx-4" onClick={headerButtonClick} disabled={loading || userType == -1}>
-						{(userType == -1) && "Loading"}
-						{(userType == 0) && "Register"}
-						{(userType == 1) && "Doctor Portal"}
-						{(userType == 2) && "Patient Home"}
-					</button>
-				</div>
+		<div className="navbar">
+			<div className='navbar-brand'>
+				<a href="/">Health-Records-App</a>
 			</div>
-			<button onClick={connectWallet} disabled={loading || (address !== undefined && address.length > 0)}>
-				{address && (<p>{`${address.substring(0, 5)}....${address.substring(address.length - 3)}`}</p>)}
-				{!address && "Connect Wallet"}
-			</button>
+			<div className="navbar-menu">
+				<button className="navbar-button" onClick={headerButtonClick} disabled={loading || userType == -1}>
+					{userType === -1 ? "loading..." : userType === 0 ? "Register" : userType === 1 ? "Doctor Portal" : "Patient Home"}
+				</button>
+				<button className="wallet-button" onClick={connectWallet} disabled={loading || (address !== undefined && address.length > 0)}>
+					{address && (<p>{`${address.substring(0, 5)}....${address.substring(address.length - 3)}`}</p>)}
+					{!address && "Connect Wallet"}
+				</button>
+			</div>
 		</div>
 	)
 }

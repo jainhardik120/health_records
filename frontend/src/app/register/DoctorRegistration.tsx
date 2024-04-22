@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import Button from '../components/Button';
 import useSigner from '../state/signer';
 import TextInput from '../components/TextInput';
+import "../styles/patientregistration.css"
 
 export const DoctorRegistration = () => {
   const { address } = useSigner();
@@ -12,8 +13,34 @@ export const DoctorRegistration = () => {
   const [specialization, setSpecialization] = useState('');
   const [clinicAddress, setClinicAddress] = useState('');
   const [clinicContact, setClinicContact] = useState('');
+  const [error, setError] = useState('');
+
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validateContact = (contact: string) => {
+    const contactRegex = /^\d{10}$/;
+    return contactRegex.test(contact);
+  };
 
   const handleSubmit = () => {
+    if (!address) {
+      // MetaMask is not connected, prevent form submission
+      console.error('MetaMask is not connected. Please connect MetaMask to submit the form.');
+      return;
+    }
+    
+    if (!validateEmail(email)) {
+      setError('Invalid email format');
+      return;
+    }
+    if (!validateContact(clinicContact)) {
+      setError('Clinic contact number must be 10 digits');
+      return;
+    }
+
     const formData = {
       firstName,
       lastName,
@@ -23,6 +50,10 @@ export const DoctorRegistration = () => {
       clinicContact,
       address
     };
+
+    // Reset error state
+    setError('');
+
     fetch('api/auth/doctor-registration', {
       method: 'POST',
       body: JSON.stringify(formData),
@@ -36,16 +67,65 @@ export const DoctorRegistration = () => {
   };
 
   return (
-    <div>
-      <TextInput label="First Name" id="firstName" value={firstName} onChange={setFirstName} />
-      <TextInput label="Last Name" id="lastName" value={lastName} onChange={setLastName} />
-      <TextInput label="Email" id="email" value={email} onChange={setEmail} />
-      <TextInput label="Specialization" id="specialization" value={specialization} onChange={setSpecialization} />
-      <TextInput label="Clinic Address" id="clinicAddress" value={clinicAddress} onChange={setClinicAddress} />
-      <TextInput label="Clinic Contact Number" id="clinicContact" value={clinicContact} onChange={setClinicContact} />
-      <Button onClick={handleSubmit}>
+    <div className="form-container">
+      <div className="form-group">
+        <TextInput
+          label="First Name"
+          className="input-field"
+          id="firstName"
+          value={firstName}
+          onChange={setFirstName}
+        />
+      </div>
+      <div className="form-group">
+        <TextInput
+          label="Last Name"
+          className="input-field"
+          id="lastName"
+          value={lastName}
+          onChange={setLastName}
+        />
+      </div>
+      <div className="form-group">
+        <TextInput
+          label="Email"
+          className="input-field"
+          id="email"
+          value={email}
+          onChange={setEmail}
+        />
+      </div>
+      <div className="form-group">
+        <TextInput
+          label="Specialization"
+          className="input-field"
+          id="specialization"
+          value={specialization}
+          onChange={setSpecialization}
+        />
+      </div>
+      <div className="form-group">
+        <TextInput
+          label="Clinic Address"
+          className="input-field"
+          id="clinicAddress"
+          value={clinicAddress}
+          onChange={setClinicAddress}
+        />
+      </div>
+      <div className="form-group">
+        <TextInput
+          label="Clinic Contact Number"
+          className="input-field"
+          id="clinicContact"
+          value={clinicContact}
+          onChange={setClinicContact}
+        />
+      </div>
+      <Button className="submit-btn" onClick={handleSubmit}>
         Register
       </Button>
+      {error && <p className="error-message">{error}</p>}
     </div>
   );
 };

@@ -5,7 +5,9 @@ interface TextInputProps {
   id: string;
   value: string;
   onChange: (value: string) => void;
+  className?: string; // Add className prop
 }
+
 
 
 const TextInput: React.FC<TextInputProps> = ({ label, id, value, onChange }) => {
