@@ -1,7 +1,29 @@
+import "../app/styles/homepage.css"
 export default function Home() {
   return (
-    <div>
-      Home Page Layout
+    <div className="container">
+      <header>
+        <h1>Welcome to Hospital Records Management System</h1>
+        <p>Efficiently manage patient records, appointments, and more.</p>
+      </header>
+      <main>
+        <section>
+          <h2>Features</h2>
+          <ul>
+            <li>Securely store and manage patient records</li>
+            <li>Schedule and manage appointments</li>
+            <li>Track medical history and treatments</li>
+            <li>Generate reports and analytics</li>
+          </ul>
+        </section>
+        <section>
+          <h2>Get Started</h2>
+          <p>Ready to streamline your hospital's operations? Get started now!</p>
+        </section>
+      </main>
+      <footer>
+        <p>&copy; 2024 Hospital Records Management System</p>
+      </footer>
     </div>
   )  
 }
