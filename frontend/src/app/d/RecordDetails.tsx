@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Record } from './RecordList';
 import useSigner from '../state/signer';
-import "./styles.css"
 
 interface SharedRecord {
   hash: string;

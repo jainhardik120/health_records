@@ -7,10 +7,11 @@ import { Contract } from "ethers";
 
 
 interface UploadFileProps {
-  contract : Contract
+  contract: Contract,
+  closePopup: () => void
 }
 
-const UploadFile: React.FC<UploadFileProps> = ({contract}) => {
+const UploadFile: React.FC<UploadFileProps> = ({ contract, closePopup }) => {
 
   const [file, setFile] = useState<File | null>(null);
   const [patientAddress, setPatientAddress] = useState("");
@@ -28,12 +29,12 @@ const UploadFile: React.FC<UploadFileProps> = ({contract}) => {
         method: "POST",
         body: formData
       });
-      if(response.ok){
+      if (response.ok) {
         const result = await response.json();
-        const transaction : TransactionResponse = await contract.createMedicalRecord(patientAddress, result.hash, file.name);
+        const transaction: TransactionResponse = await contract.createMedicalRecord(patientAddress, result.hash, file.name);
         await transaction.wait();
         alert("Created Document Successfully");
-      }else{
+      } else {
         console.error("Error Creating File");
       }
     } catch (error) {
@@ -48,8 +49,8 @@ const UploadFile: React.FC<UploadFileProps> = ({contract}) => {
 
   return (
     <>
-      <div>
-        <div>
+      <div className="popup-container">
+        <div className="popup">
           <form onSubmit={handleSubmit}>
             <TextInput label="Patient Address" id="patientaddress" value={patientAddress} onChange={setPatientAddress} />
             <div className="mb-4">
@@ -63,9 +64,12 @@ const UploadFile: React.FC<UploadFileProps> = ({contract}) => {
                 onChange={handleFileChange}
               />
             </div>
-            <button disabled={!file} className={`bg-black hover:bg-gray-800 text-white py-2 px-4 rounded`} type="submit">
-              Upload
-            </button>
+            <div className="flex justify-between">
+              <button disabled={!file} className="bg-black hover:bg-gray-800 text-white py-2 px-4 rounded" type="submit">
+                Upload
+              </button>
+              <button onClick={closePopup} className="hover:bg-gray-800 text-white py-2 px-4 rounded bg-gray-900">Close</button>
+            </div>
           </form>
         </div>
       </div>

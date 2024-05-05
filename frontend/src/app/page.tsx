@@ -2,11 +2,11 @@ import "../app/styles/homepage.css"
 export default function Home() {
   return (
     <div className="container">
-      <header>
+      <div className="header">
         <h1>Welcome to Hospital Records Management System</h1>
         <p>Efficiently manage patient records, appointments, and more.</p>
-      </header>
-      <main>
+      </div>
+      <div className="main">
         <section>
           <h2>Features</h2>
           <ul>
@@ -20,10 +20,7 @@ export default function Home() {
           <h2>Get Started</h2>
           <p>Ready to streamline your hospital's operations? Get started now!</p>
         </section>
-      </main>
-      <footer>
-        <p>&copy; 2024 Hospital Records Management System</p>
-      </footer>
+      </div>
     </div>
-  )  
+  )
 }

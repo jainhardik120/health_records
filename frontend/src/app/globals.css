@@ -1,3 +1,46 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.app-content{
+  padding-top: 60px;
+  padding-bottom: 2.5rem;
+}
+
+.app-container{
+  position: relative;
+  min-height: 100vh;
+}
+
+.footer {
+  padding: 30px 40px;
+  background-color: black; 
+  width: 100%;
+  position: absolute; 
+  bottom: 0; 
+  left: 0; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.5rem;
+}
+
+.popup-container {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.popup {
+  padding: 20px;
+  background: white;
+  position: relative;
+  border-radius: 8px;
+  margin: auto;
+  width: 70%;
+  z-index: 100;
+}

@@ -1,46 +1,37 @@
-body {
-  /* background-image: url('https://www.fortech.ro/wp-content/uploads/2020/06/Hospital-Management-System_Fortech.png');
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center; */
-  margin: 0; /* Remove default body margins */
-  height: 120vh; /* Ensure body fills the entire viewport height */
-}
-
 .container {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
 }
 
+.header {
+  text-align: center;
+  margin-bottom: 40px;
+}
 
-.container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-  header {
-    text-align: center;
-    margin-bottom: 40px;
-  }
-  h1 {
-    font-size: 2.5rem;
-  }
-  main {
-    margin-bottom: 40px;
-  }
-  section {
-    margin-bottom: 20px;
-  }
-  ul {
-    list-style: none;
-    padding: 0;
-  }
-  li {
-    margin-bottom: 10px;
-  }
-  footer {
-    text-align: center;
-    font-size: 0.8rem;
-    margin-top: 40px;
-  }
+h1 {
+  font-size: 2.5rem;
+}
+
+.main {
+  margin-bottom: 40px;
+}
+
+section {
+  margin-bottom: 20px;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 10px;
+}
+
+footer {
+  text-align: center;
+  font-size: 0.8rem;
+  margin-top: 40px;
+}

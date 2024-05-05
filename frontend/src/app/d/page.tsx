@@ -6,6 +6,7 @@ import PatientRequestForm from "./PatientRequestForm";
 import PendingRequests from "./PendingRequests";
 import { useState, useEffect } from "react";
 import RecordList from "./RecordList";
+import Button from "../components/Button";
 
 export type SharedRecord = {
   patient: string;
@@ -15,7 +16,10 @@ export type SharedRecord = {
 }
 
 export default function Page() {
-  const { signer, contract, address } = useSigner();
+  const { contract, address } = useSigner();
+
+  const [uploadPopupOpened, setUploadPopupOpened] = useState(false);
+  const [patientRequestOpened, setPatientRequestOpened] = useState(false);
 
   const [Records, setRecords] = useState<SharedRecord[]>([]);
 
@@ -41,11 +45,16 @@ export default function Page() {
 
   return (
     <div>
-      Doctor Home
-      <RecordList records={Records}/>
-      <UploadFile contract={contract} />
-      <PatientRequestForm />
+      <RecordList records={Records} />
+      {uploadPopupOpened && (
+        <UploadFile contract={contract} closePopup={() => setUploadPopupOpened(false)} />
+      )}
+      {patientRequestOpened && (
+        <PatientRequestForm closePopup={() => setPatientRequestOpened(false)} />
+      )}
       <PendingRequests />
+      <Button onClick={() => setUploadPopupOpened(true)}>Upload File</Button>
+      <Button onClick={() => setPatientRequestOpened(true)}>Request</Button>
     </div>
   )
 }
