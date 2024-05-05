@@ -2,27 +2,17 @@ import { tmpdir } from "os";
 import { createWriteStream, createReadStream } from 'fs';
 import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next';
 import { createDecipheriv } from 'crypto';
-import { sql } from "@vercel/postgres";
 import { Readable } from 'stream';
 import { pipeline } from 'stream/promises';
-
-const fetchFileFromIPFS = async (ipfsHash: String) => {
-  const res = await fetch(`https://gateway.pinata.cloud/ipfs/${ipfsHash}`);
-  if (!res.ok) {
-    throw new Error(`Failed to fetch file from IPFS. Status: ${res.status}`);
-  }
-  return res.arrayBuffer();
-};
+import { fetchFileFromIPFS, getKey } from './../../helpers';
 
 const handler: NextApiHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const { ipfsHash, address } = req.query;
-    if (ipfsHash == undefined || address == undefined) {
+    if (ipfsHash == undefined || address == undefined || typeof address !== 'string') {
       return res.status(404).json({ message: "Pass values for ipfshash and address" });
     }
-    const { rows } = await sql`SELECT * FROM keys WHERE address = ${address as string}`;
-    const privateKey: string = rows[0].key;
-    const key = Buffer.from(privateKey, 'hex');
+    const key = await getKey(address);
     const encryptedData = await fetchFileFromIPFS(ipfsHash as string);
     const encryptedBuffer = Buffer.from(encryptedData);
     const iv = encryptedBuffer.subarray(0, 16);

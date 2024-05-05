@@ -3,12 +3,10 @@ import { tmpdir } from "os";
 import { createReadStream, statSync } from 'fs';
 import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next';
 import { randomBytes, createCipheriv } from 'crypto';
-import pinataSDK from "@pinata/sdk";
 import { sql } from "@vercel/postgres";
 import { Readable } from 'stream';
+import { uploadFileToIPFS } from '@/helpers';
 export const dynamic = 'force-dynamic'
-
-const pinata = new pinataSDK({ pinataJWTKey: process.env.PINATA_JWT_KEY });
 
 export const config = {
   api: {
@@ -32,7 +30,6 @@ const handler: NextApiHandler = async (req: NextApiRequest, res: NextApiResponse
     const algorithm = 'aes-256-cbc';
     const iv = randomBytes(16);
     const { filepath, originalFilename } = data.file[0];
-    console.log(originalFilename);
     const input = createReadStream(filepath);
     const cipher = createCipheriv(algorithm, key, iv);
     const fileSize = statSync(filepath).size;
@@ -45,16 +42,9 @@ const handler: NextApiHandler = async (req: NextApiRequest, res: NextApiResponse
     input.on('end', async () => {
       const result = Buffer.concat([iv, cipher.update(buffer), cipher.final()]);
       const readableStream = Readable.from(result);
-      const pinataRes = await pinata.pinFileToIPFS(readableStream, {
-        pinataMetadata: {
-          name: originalFilename
-        },
-        pinataOptions: {
-          cidVersion: 0
-        }
-      })
+      const hash = await uploadFileToIPFS(readableStream, originalFilename);
       return res.json({
-        hash: pinataRes.IpfsHash
+        hash
       })
     });
   } catch (error) {

@@ -1,8 +1,9 @@
 'use client'
 
 import { createContext, useContext, ReactNode, useState, useEffect } from "react";
-import { JsonRpcSigner, BrowserProvider } from "ethers";
+import { JsonRpcSigner, BrowserProvider, Contract } from "ethers";
 import Web3Modal from "web3modal";
+import HealthRecords from "../../artifacts/HealthRecords.json";
 
 type SignerContextType = {
 	signer?: JsonRpcSigner;
@@ -10,6 +11,7 @@ type SignerContextType = {
 	loading: boolean;
 	type : number;
 	connectWallet: () => Promise<void>;
+	contract : Contract;
 }
 
 const SignerContext = createContext<SignerContextType>({} as any);
@@ -21,7 +23,7 @@ export const SignerProvider = ({ children }: { children: ReactNode }) => {
 	const [address, setAddress] = useState<string>();
 	const [loading, setLoading] = useState(false);
 	const [type, setType] = useState(-1);
-
+	const contract = new Contract("0x8fcaAAE9464F37f46Ba877c847660f4d8e14595d", HealthRecords.abi, signer);
 	
 	useEffect(() => {
 		const getType = async () => {
@@ -68,7 +70,7 @@ export const SignerProvider = ({ children }: { children: ReactNode }) => {
 		}
 		setLoading(false);
 	};
-	const contextValue = { signer, address, loading, connectWallet, type };
+	const contextValue = { signer, address, loading, connectWallet, type, contract };
 
 
 	return (

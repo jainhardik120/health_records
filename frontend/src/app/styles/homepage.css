@@ -1,8 +1,8 @@
 body {
-  background-image: url('https://www.fortech.ro/wp-content/uploads/2020/06/Hospital-Management-System_Fortech.png');
+  /* background-image: url('https://www.fortech.ro/wp-content/uploads/2020/06/Hospital-Management-System_Fortech.png');
   background-size: cover;
   background-repeat: no-repeat;
-  background-position: center;
+  background-position: center; */
   margin: 0; /* Remove default body margins */
   height: 120vh; /* Ensure body fills the entire viewport height */
 }
