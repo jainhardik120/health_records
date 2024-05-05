@@ -9,11 +9,18 @@ interface PendingRequestsProps {
   address?: string;
 }
 
-const PendingRequests: React.FC<PendingRequestsProps> = ({ address, Records }) => {
+type Request = {
+  request_id : number,
+  doctor_address : string,
+  patient_address : string,
+  request_datetime : string,
+  message : string
+}
 
-  const [pendingRequests, setPendingRequests] = useState([]);
-  const [selectedRequest, setSelectedRequest] = useState(null);
-  const [selectedRecords, setSelectedRecords] = useState<MedicalRecord[]>([]);
+const PendingRequests: React.FC<PendingRequestsProps> = ({ address, Records }) => {
+  const [pendingRequests, setPendingRequests] = useState<Request[]>([]);
+  const [selectedRequest, setSelectedRequest] = useState<Request|null>(null);
+  const [selectedRecords, setSelectedRecords] = useState<string[]>([]);
   const [timeInSeconds, setTimeInSeconds] = useState<number>(3600);
   const [showPopup, setShowPopup] = useState(false);
 
@@ -34,10 +41,11 @@ const PendingRequests: React.FC<PendingRequestsProps> = ({ address, Records }) =
       .catch(error => console.error('Error fetching pending requests:', error));
   }
 
-  const deleteRequest = async (id : number)=>{
+  const deleteRequest = async (id: number) => {
     try {
       const response = await fetch(`/api/request/deleteRequest/${id.toString()}`, {
-        method: 'DELETE'});
+        method: 'DELETE'
+      });
       loadPendingRequests();
     } catch (error) {
       console.error('Error deleting request:', error)
@@ -54,26 +62,37 @@ const PendingRequests: React.FC<PendingRequestsProps> = ({ address, Records }) =
     setShowPopup(true);
   };
 
-  const handleRecordCheckboxChange = (record: MedicalRecord) => {
+  const handleRecordCheckboxChange = (recordId: string) => {
     setSelectedRecords(prevSelected => {
-      if (prevSelected.includes(record)) {
-        return prevSelected.filter(precord => precord.hash !== record.hash);
+      if (prevSelected.includes(recordId)) {
+        return prevSelected.filter(id => id !== recordId);
       } else {
-        return [...prevSelected, record];
+        return [...prevSelected, recordId];
       }
     });
   };
 
   const handleSendRecords = async () => {
     console.log('Selected records:', selectedRecords);
+    if(selectedRecords.length==0){
+      return;
+    }
+    if(!selectedRequest){
+      return;
+    }
     try {
-
+      let convertedRecords : MedicalRecord[] = [];
+      for(let i = 0; i < Records.length; i++){
+        if(selectedRecords.includes(Records[i].hash)){
+          convertedRecords = [...convertedRecords, Records[i]];
+        }
+      }
       const response = await fetch('/api/request/approveRequest', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ ipfsHashes: selectedRecords, requestId: selectedRequest.request_id }),
+        body: JSON.stringify({ ipfsHashes: convertedRecords, requestId: selectedRequest.request_id }),
       });
       const body = await response.json();
       console.log(body);
@@ -109,10 +128,10 @@ const PendingRequests: React.FC<PendingRequestsProps> = ({ address, Records }) =
                 <label>
                   <input
                     type="checkbox"
-                    checked={selectedRecords.includes(record)}
-                    onChange={() => handleRecordCheckboxChange(record)}
+                    checked={selectedRecords.includes(record.hash)}
+                    onChange={() => handleRecordCheckboxChange(record.hash)}
                   />
-                  {record.hash}_{record.fileName}_{record.creator}_{record.creationTime.toString()}
+                  {record.fileName}
                 </label>
               </li>
             ))}

@@ -28,15 +28,15 @@ const RecordList: React.FC<RecordListProps> = ({ records }) => {
         {records.map((record, index) => (
           <li key={index}>
             <p>Patient: {record.patient}</p>
-            <p>Creation Time: {new Date(record.creationTime).toLocaleString()}</p>
-            <p>Expiry Time: {new Date(record.expiryTime).toLocaleString()}</p>
+            <p>Creation Time: {new Date(record.creationTime * 1000).toLocaleString()}</p>
+            <p>Expiry Time: {new Date((record.expiryTime + record.creationTime) * 1000).toLocaleString()}</p>
             <p>Metahash: {record.metahash}</p>
             <button onClick={() => handleOpenPopup(record)}>View Details</button>
           </li>
         ))}
       </ul>
       {showPopup && selectedRecord && (
-        <RecordDetails selectedRecord={selectedRecord} closePopup={()=>setShowPopup(false)}/>
+        <RecordDetails selectedRecord={selectedRecord} closePopup={() => setShowPopup(false)} />
       )}
     </div>
   );
