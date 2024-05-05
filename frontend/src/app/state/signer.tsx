@@ -3,7 +3,7 @@
 import { createContext, useContext, ReactNode, useState, useEffect } from "react";
 import { JsonRpcSigner, BrowserProvider, Contract } from "ethers";
 import Web3Modal from "web3modal";
-import HealthRecords from "../../artifacts/HealthRecords.json";
+import HealthRecords from "../../artifacts/contracts/HealthRecords.sol/HealthRecords.json";
 
 type SignerContextType = {
 	signer?: JsonRpcSigner;
@@ -23,7 +23,7 @@ export const SignerProvider = ({ children }: { children: ReactNode }) => {
 	const [address, setAddress] = useState<string>();
 	const [loading, setLoading] = useState(false);
 	const [type, setType] = useState(-1);
-	const contract = new Contract("0x8fcaAAE9464F37f46Ba877c847660f4d8e14595d", HealthRecords.abi, signer);
+	const contract = new Contract("0x6F9C43aC61E24A040303Fb755199b9F6F1FAF054", HealthRecords.abi, signer);
 	
 	useEffect(() => {
 		const getType = async () => {

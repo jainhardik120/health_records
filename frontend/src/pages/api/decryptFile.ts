@@ -8,7 +8,7 @@ import { fetchFileFromIPFS, getKey } from './../../helpers';
 
 const handler: NextApiHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const { ipfsHash, address } = req.query;
+    const { ipfsHash, address, filename } = req.query;
     if (ipfsHash == undefined || address == undefined || typeof address !== 'string') {
       return res.status(404).json({ message: "Pass values for ipfshash and address" });
     }
@@ -22,7 +22,7 @@ const handler: NextApiHandler = async (req: NextApiRequest, res: NextApiResponse
     const input = encryptedStream.pipe(decipher);
     const output = createWriteStream(decryptedFilePath);
     await pipeline(input, output);
-    res.setHeader('Content-Disposition', 'attachment; filename=decrypted_file');
+    res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
     res.setHeader('Content-Type', 'application/octet-stream');
     const decryptedFileStream = createReadStream(decryptedFilePath);
     decryptedFileStream.pipe(res);

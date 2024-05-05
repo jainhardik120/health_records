@@ -11,6 +11,9 @@ const config: HardhatUserConfig = {
       url: `${process.env.ALCHEMY_SEPOLIA_URL}`,
       accounts: [`0x${process.env.SEPOLIA_PRIVATE_KEY}`],
     }
+  },
+  paths:{
+    artifacts:"../frontend/src/artifacts"
   }
 };
 

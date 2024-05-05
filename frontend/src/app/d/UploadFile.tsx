@@ -30,7 +30,7 @@ const UploadFile: React.FC<UploadFileProps> = ({contract}) => {
       });
       if(response.ok){
         const result = await response.json();
-        const transaction : TransactionResponse = await contract.createMedicalRecord(patientAddress, result.hash);
+        const transaction : TransactionResponse = await contract.createMedicalRecord(patientAddress, result.hash, file.name);
         await transaction.wait();
         alert("Created Document Successfully");
       }else{

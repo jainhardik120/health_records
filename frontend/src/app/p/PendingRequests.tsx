@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
 import { MedicalRecord } from './page';
+import { TransactionResponse } from 'ethers';
+import useSigner from '../state/signer';
 
 interface PendingRequestsProps {
   Records: MedicalRecord[];
@@ -8,12 +10,21 @@ interface PendingRequestsProps {
 }
 
 const PendingRequests: React.FC<PendingRequestsProps> = ({ address, Records }) => {
+
   const [pendingRequests, setPendingRequests] = useState([]);
   const [selectedRequest, setSelectedRequest] = useState(null);
-  const [selectedRecords, setSelectedRecords] = useState<string[]>([]);
+  const [selectedRecords, setSelectedRecords] = useState<MedicalRecord[]>([]);
+  const [timeInSeconds, setTimeInSeconds] = useState<number>(3600);
   const [showPopup, setShowPopup] = useState(false);
 
-  useEffect(() => {
+  const { contract } = useSigner();
+
+  const handleTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const timeValue = parseInt(event.target.value);
+    setTimeInSeconds(timeValue);
+  };
+
+  const loadPendingRequests = () => {
     fetch(`/api/request/${address}/pending-requests`)
       .then(response => response.json())
       .then(data => {
@@ -21,6 +32,21 @@ const PendingRequests: React.FC<PendingRequestsProps> = ({ address, Records }) =
         setPendingRequests(data);
       })
       .catch(error => console.error('Error fetching pending requests:', error));
+  }
+
+  const deleteRequest = async (id : number)=>{
+    try {
+      const response = await fetch(`/api/request/deleteRequest/${id.toString()}`, {
+        method: 'DELETE'});
+      loadPendingRequests();
+    } catch (error) {
+      console.error('Error deleting request:', error)
+    }
+  }
+
+
+  useEffect(() => {
+    loadPendingRequests();
   }, [address]);
 
   const handleApproveRequest = (request: any) => {
@@ -28,12 +54,12 @@ const PendingRequests: React.FC<PendingRequestsProps> = ({ address, Records }) =
     setShowPopup(true);
   };
 
-  const handleRecordCheckboxChange = (recordId: string) => {
+  const handleRecordCheckboxChange = (record: MedicalRecord) => {
     setSelectedRecords(prevSelected => {
-      if (prevSelected.includes(recordId)) {
-        return prevSelected.filter(id => id !== recordId);
+      if (prevSelected.includes(record)) {
+        return prevSelected.filter(precord => precord.hash !== record.hash);
       } else {
-        return [...prevSelected, recordId];
+        return [...prevSelected, record];
       }
     });
   };
@@ -49,12 +75,16 @@ const PendingRequests: React.FC<PendingRequestsProps> = ({ address, Records }) =
         },
         body: JSON.stringify({ ipfsHashes: selectedRecords, requestId: selectedRequest.request_id }),
       });
-
-      console.log(await response.json());
+      const body = await response.json();
+      console.log(body);
+      const transaction: TransactionResponse = await contract.createRecordCopy(selectedRequest.doctor_address, body.hash, timeInSeconds);
+      await transaction.wait();
+      alert("Created Document Successfully");
+      await deleteRequest(selectedRequest.request_id);
     } catch (error) {
       console.log(error);
     }
-    // setShowPopup(false);
+    setShowPopup(false);
   };
 
   return (
@@ -79,14 +109,22 @@ const PendingRequests: React.FC<PendingRequestsProps> = ({ address, Records }) =
                 <label>
                   <input
                     type="checkbox"
-                    checked={selectedRecords.includes(record.hash)}
-                    onChange={() => handleRecordCheckboxChange(record.hash)}
+                    checked={selectedRecords.includes(record)}
+                    onChange={() => handleRecordCheckboxChange(record)}
                   />
-                  {record.hash}
+                  {record.hash}_{record.fileName}_{record.creator}_{record.creationTime.toString()}
                 </label>
               </li>
             ))}
           </ul>
+          <label>
+            Time in Seconds:
+            <input
+              type="number"
+              value={timeInSeconds}
+              onChange={handleTimeChange}
+            />
+          </label>
           <button onClick={handleSendRecords}>Send Records</button>
         </div>
       )}

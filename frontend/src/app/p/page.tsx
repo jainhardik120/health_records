@@ -5,9 +5,11 @@ import useSigner from "../state/signer"
 import PendingRequests from "./PendingRequests";
 import { DisplayRecords } from "./DisplayRecords";
 
-export interface MedicalRecord {
+export type MedicalRecord = {
   hash: string,
-  creationTime: Date
+  creationTime: number,
+  fileName : string,
+  creator : string
 }
 
 export default function Page() {
@@ -15,12 +17,15 @@ export default function Page() {
   const [Records, setRecords] = useState<MedicalRecord[]>([]);
   useEffect(() => {
     const getRecords = async () => {
-      const res = await contract.getValidRecords(address);
+      const res = await contract.getValidRecords();
+      console.log(res);
       setRecords(
         res.map((item: any[], i: any) => {
           return ({
-            hash: item[3],
-            creationTime: item[1]
+            hash: item[2],
+            creationTime: Number(item[1]),
+            fileName : item[4],
+            creator : item[3]
           })
         })
       )
