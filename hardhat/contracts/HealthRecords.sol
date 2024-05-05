@@ -7,6 +7,8 @@ contract HealthRecords {
         uint256 creationTime;
         int256 expiryTime;
         string metahash;
+        address creator;
+        string fileName;
     }
 
     mapping(address => MedicalRecord[]) map;
