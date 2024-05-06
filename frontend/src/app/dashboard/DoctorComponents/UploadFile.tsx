@@ -4,6 +4,7 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import TextInput from "../../components/TextInput";
 import { TransactionResponse } from "ethers";
 import { Contract } from "ethers";
+import { toast } from "react-toastify";
 
 
 interface UploadFileProps {
@@ -21,6 +22,7 @@ const UploadFile: React.FC<UploadFileProps> = ({ contract, closePopup }) => {
     if (!file) {
       return;
     }
+    const id = toast.loading("Uploading File");
     try {
       const formData = new FormData();
       formData.append("address", patientAddress);
@@ -29,17 +31,20 @@ const UploadFile: React.FC<UploadFileProps> = ({ contract, closePopup }) => {
         method: "POST",
         body: formData
       });
-      if (response.ok) {
-        const result = await response.json();
-        const transaction: TransactionResponse = await contract.createMedicalRecord(patientAddress, result.hash, file.name);
-        await transaction.wait();
-        alert("Created Document Successfully");
-      } else {
-        console.error("Error Creating File");
+      if (!response.ok) {
+        const errorMessage = await response.json();
+        throw new Error(errorMessage.error || 'Failed to upload file');
       }
-    } catch (error) {
-      console.error("Error Creating File", error);
+      const result = await response.json();
+      const transaction: TransactionResponse = await contract.createMedicalRecord(patientAddress, result.hash, file.name);
+      toast.update(id, { render: "Waiting for Transaction to be validated", type: "info", isLoading: true });
+      await transaction.wait();
+      toast.update(id, { render: "File Uploaded Successfully", type: "success", isLoading: false });
+      closePopup();
+    } catch (error: any) {
+      toast.update(id, { render: error.message || "Error Uploading File", type: "error", isLoading: false })
     }
+    toast.dismiss(id);
   }
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {

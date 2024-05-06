@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import useSigner from '../../state/signer';
 import TextInput from '../../components/TextInput';
 import TextArea from '../../components/TextArea';
+import { toast } from 'react-toastify';
 
 interface PatientRequestProps {
   closePopup: () => void
@@ -15,19 +16,28 @@ const PatientRequestForm: React.FC<PatientRequestProps> = ({ closePopup }) => {
   const [message, setMessage] = useState('');
   const [patientAddresses, setPatientAddresses] = useState<string[]>([]);
 
+  const fetchPatientList = async () => {
+    try {
+      const response = await fetch('/api/request/patientList');
+      if (!response.ok) {
+        const errorMessage = await response.json();
+        throw new Error(errorMessage.error || 'Error Fetching Patient List');
+      }
+      const data = await response.json();
+      setPatientAddresses(data)
+    } catch (error: any) {
+      toast.error(error.message || "Error Fetching Patient List");
+    }
+  }
+
   useEffect(() => {
-    // Fetch list of patient addresses
-    fetch('/api/request/patientList')
-      .then(response => response.json())
-      .then(data => setPatientAddresses(data))
-      .catch(error => console.error('Error fetching patient addresses:', error));
+    fetchPatientList()
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    const id = toast.loading("Creating Request");
     try {
-      // Add patient request to the database
       const response = await fetch('/api/request', {
         method: 'POST',
         headers: {
@@ -35,19 +45,17 @@ const PatientRequestForm: React.FC<PatientRequestProps> = ({ closePopup }) => {
         },
         body: JSON.stringify({ doctorAddress: address, patientAddress, message }),
       });
-
       if (!response.ok) {
-        throw new Error('Failed to add request');
+        const errorMessage = await response.json();
+        throw new Error(errorMessage.error || 'Error Creating Request');
       }
-
       setPatientAddress('');
       setMessage('');
-
-      // Optionally, you can show a success message or perform other actions
-      console.log('Request added successfully');
-    } catch (error) {
-      console.error('Error adding request:', error);
+      toast.update(id, { render: 'Request added successfully', type: "success", isLoading: false });
+    } catch (error: any) {
+      toast.update(id, { render: error.message, type: "error", isLoading: false })
     }
+    toast.dismiss(id);
   };
 
   return (

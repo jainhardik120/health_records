@@ -6,6 +6,8 @@ import { TransactionResponse } from 'ethers';
 import useSigner from '../../state/signer';
 import Button from '../../components/Button';
 import { MedicalRecord } from './PatientHome';
+import { toast } from 'react-toastify';
+import { randomBytes, sign } from 'crypto';
 
 
 type Request = {
@@ -16,14 +18,13 @@ type Request = {
   message: string
 }
 
-const PendingRequests: React.FC = () => {
 
-  const { address, contract } = useSigner();
+const PendingRequests: React.FC = () => {
+  const { address, contract, signer } = useSigner();
   const [Records, setRecords] = useState<MedicalRecord[]>([]);
   useEffect(() => {
     const getRecords = async () => {
       const res = await contract.getValidRecords();
-      console.log(res);
       setRecords(
         res.map((item: any[], i: any) => {
           return ({
@@ -38,7 +39,7 @@ const PendingRequests: React.FC = () => {
     if (address) {
       getRecords();
     }
-  }, [address, contract])
+  }, [address, contract]);
 
   const [pendingRequests, setPendingRequests] = useState<Request[]>([]);
   const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
@@ -51,11 +52,10 @@ const PendingRequests: React.FC = () => {
     setTimeInSeconds(timeValue);
   };
 
-  const loadPendingRequests = () => {
-    fetch(`/api/request/${address}/pending-requests`)
+  const loadPendingRequests = (taddress: string) => {
+    fetch(`/api/request/${taddress}/pending-requests`)
       .then(response => response.json())
       .then(data => {
-        console.log(data);
         setPendingRequests(data);
       })
       .catch(error => console.error('Error fetching pending requests:', error));
@@ -63,10 +63,11 @@ const PendingRequests: React.FC = () => {
 
   const deleteRequest = async (id: number) => {
     try {
-      const response = await fetch(`/api/request/deleteRequest/${id.toString()}`, {
+      await fetch(`/api/request/deleteRequest/${id.toString()}`, {
         method: 'DELETE'
       });
-      loadPendingRequests();
+      if (address)
+        loadPendingRequests(address);
     } catch (error) {
       console.error('Error deleting request:', error)
     }
@@ -74,7 +75,8 @@ const PendingRequests: React.FC = () => {
 
 
   useEffect(() => {
-    loadPendingRequests();
+    if (address)
+      loadPendingRequests(address);
   }, [address]);
 
   const handleApproveRequest = (request: any) => {
@@ -93,13 +95,13 @@ const PendingRequests: React.FC = () => {
   };
 
   const handleSendRecords = async () => {
-    console.log('Selected records:', selectedRecords);
     if (selectedRecords.length == 0) {
       return;
     }
-    if (!selectedRequest) {
+    if (!selectedRequest || !signer) {
       return;
     }
+    const id = toast.loading("Sending Records");
     try {
       let convertedRecords: MedicalRecord[] = [];
       for (let i = 0; i < Records.length; i++) {
@@ -107,22 +109,31 @@ const PendingRequests: React.FC = () => {
           convertedRecords = [...convertedRecords, Records[i]];
         }
       }
+      const bytes = randomBytes(32).toString("base64");
+      const sign = await signer.signMessage(JSON.stringify({
+        requestId: selectedRequest.request_id,
+        random: bytes
+      }));
       const response = await fetch('/api/request/approveRequest', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ ipfsHashes: convertedRecords, requestId: selectedRequest.request_id }),
+        body: JSON.stringify({ ipfsHashes: convertedRecords, requestId: selectedRequest.request_id, random: bytes, sign: sign }),
       });
+      if (!response.ok) {
+        const errorMessage = await response.json();
+        throw new Error(errorMessage.error || 'Error Sending Files');
+      }
       const body = await response.json();
-      console.log(body);
       const transaction: TransactionResponse = await contract.createRecordCopy(selectedRequest.doctor_address, body.hash, timeInSeconds);
       await transaction.wait();
-      alert("Created Document Successfully");
+      toast.update(id, { render: "Files transferred successfully", isLoading: false });
       await deleteRequest(selectedRequest.request_id);
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      toast.update(id, { render: error.message, type: "error", isLoading: false })
     }
+    toast.dismiss(id);
     setShowPopup(false);
   };
 

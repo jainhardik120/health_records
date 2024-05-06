@@ -5,12 +5,21 @@ import { createDecipheriv } from 'crypto';
 import { Readable } from 'stream';
 import { pipeline } from 'stream/promises';
 import { fetchFileFromIPFS, getKey } from './../../helpers';
+import { verifyMessage } from "ethers";
 
 const handler: NextApiHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const { ipfsHash, address, filename } = req.query;
-    if (ipfsHash == undefined || address == undefined || typeof address !== 'string') {
-      return res.status(404).json({ message: "Pass values for ipfshash and address" });
+    const { ipfsHash, address, filename, sign } = req.query;
+    if (ipfsHash == undefined || address == undefined || sign == undefined || typeof sign !== 'string' || typeof address !== 'string') {
+      return res.status(404).json({ error: "Pass values for ipfshash and address" });
+    }
+    const keyFromMessage = verifyMessage(JSON.stringify({
+      ipfsHash: ipfsHash,
+      address: address,
+      fileName: filename
+    }), sign);
+    if (keyFromMessage !== address) {
+      return res.status(401).json({ error: "You are not authorized to view this file" });
     }
     const key = await getKey(address);
     const encryptedData = await fetchFileFromIPFS(ipfsHash as string);
@@ -26,9 +35,8 @@ const handler: NextApiHandler = async (req: NextApiRequest, res: NextApiResponse
     res.setHeader('Content-Type', 'application/octet-stream');
     const decryptedFileStream = createReadStream(decryptedFilePath);
     decryptedFileStream.pipe(res);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error' });
+  } catch (error : any) {
+    res.status(500).json({ error: error.message || "Internal Server Error" });
   }
 };
 

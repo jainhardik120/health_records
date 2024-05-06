@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { Record } from './RecordList';
 import useSigner from '../../state/signer';
 import Button from '../../components/Button';
+import { toast } from 'react-toastify';
+import { downloadFile } from '@/downloadFile';
 
 interface SharedRecord {
   hash: string;
@@ -19,17 +21,25 @@ interface RecordDetailsProps {
 
 const RecordDetails: React.FC<RecordDetailsProps> = ({ selectedRecord, closePopup }) => {
   const [records, setRecords] = useState<SharedRecord[]>([]);
-  const { address } = useSigner();
-  useEffect(() => {
-    const fetchRecordsFromIPFS = async () => {
-      const metadataResponse = await fetch(`https://ipfs.io/ipfs/${selectedRecord.metahash}`);
-      if (metadataResponse.status != 200) return;
-      const json = await metadataResponse.json();
-      setRecords(json.files)
-    };
+  const { address, signer } = useSigner();
 
+  const fetchRecordsFromIPFS = async () => {
+    try {
+      const response = await fetch(`https://ipfs.io/ipfs/${selectedRecord.metahash}`);
+      if (!response.ok) {
+        const errorMessage = await response.json();
+        throw new Error(errorMessage.error || 'Error Fetching Metadata');
+      }
+      const data = await response.json();
+      setRecords(data.files)
+    } catch (error: any) {
+      toast.error(error.message || "Error Fetching Patient List");
+    }
+  };
+
+  useEffect(() => {
     fetchRecordsFromIPFS();
-  }, [selectedRecord]);
+  });
 
   return (
     <div>
@@ -53,21 +63,7 @@ const RecordDetails: React.FC<RecordDetailsProps> = ({ selectedRecord, closePopu
                       <p className="text-gray-600">Creation Time: {new Date(record.creationTime).toLocaleString()}</p>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <button onClick={async () => {
-                        try {
-                          const response = await fetch(`/api/decryptFile?ipfsHash=${record.hash}&address=${address}&filename=${record.fileName}`);
-                          if (!response.ok) {
-                            throw new Error('Failed to download file');
-                          }
-                          const blob = await response.blob();
-                          const link = document.createElement('a');
-                          link.href = window.URL.createObjectURL(blob);
-                          link.download = record.fileName;
-                          link.click();
-                        } catch (error) {
-                          console.error(error);
-                        }
-                      }} className="text-indigo-600 hover:text-indigo-900">Download</button>
+                      <button onClick={() => { if (address && signer) { downloadFile(record.hash, record.fileName, address, signer) } }} className="text-indigo-600 hover:text-indigo-900">Download</button>
                     </td>
                   </tr>
                 ))}

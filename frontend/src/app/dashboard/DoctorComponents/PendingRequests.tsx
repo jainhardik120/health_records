@@ -4,21 +4,31 @@ import React, { useState, useEffect } from 'react';
 import useSigner from '../../state/signer';
 import Button from '@/app/components/Button';
 import PatientRequestForm from './PatientRequestForm';
+import { toast } from 'react-toastify';
 
 const PendingRequests: React.FC = () => {
   const [pendingRequests, setPendingRequests] = useState([]);
   const { address } = useSigner();
   const [patientRequestOpened, setPatientRequestOpened] = useState(false);
 
+  const fetchPendingList = async (taddress: string) => {
+    try {
+      const response = await fetch(`/api/request/${taddress}/pending-requests`);
+      if (!response.ok) {
+        const errorMessage = await response.json();
+        throw new Error(errorMessage.error || 'Error Fetching Requests');
+      }
+      const data = await response.json();
+      setPendingRequests(data);
+    } catch (error: any) {
+      toast.error(error.message || "Error Fetching Patient List");
+    }
+  }
 
   useEffect(() => {
-    fetch(`/api/request/${address}/pending-requests`)
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);
-        setPendingRequests(data);
-      })
-      .catch(error => console.error('Error fetching pending requests:', error));
+    if (address) {
+      fetchPendingList(address);
+    }
   }, [address]);
 
   return (

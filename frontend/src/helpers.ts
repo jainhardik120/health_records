@@ -1,7 +1,7 @@
 import { sql } from '@vercel/postgres';
 import { Readable } from 'stream';
 import pinataSDK from "@pinata/sdk";
-import { ReadStream, createReadStream, createWriteStream } from 'fs';
+import { createReadStream, createWriteStream } from 'fs';
 const pinata = new pinataSDK({ pinataJWTKey: process.env.PINATA_JWT_KEY });
 
 export const ErrorResponse = (error: any, statusCode: number) => {
@@ -85,4 +85,4 @@ export const getKey = async (address: string) => {
 export const pinJSONToIPFS = async (body: any) => {
   const response = await pinata.pinJSONToIPFS(body);
   return response.IpfsHash;
-}
+};

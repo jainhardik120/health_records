@@ -1,6 +1,8 @@
 "use client";
 
+import useSigner from "@/app/state/signer";
 import { MedicalRecord } from "./PatientHome";
+import { downloadFile } from '@/downloadFile';
 
 interface DisplayRecordsProps {
   Records: MedicalRecord[],
@@ -8,6 +10,7 @@ interface DisplayRecordsProps {
 }
 
 export const DisplayRecords: React.FC<DisplayRecordsProps> = ({ Records, address }) => {
+  const { signer } = useSigner();
   return (
     <>
       <div className="overflow-x-auto">
@@ -29,28 +32,13 @@ export const DisplayRecords: React.FC<DisplayRecordsProps> = ({ Records, address
                 <td className="px-6 py-4 whitespace-nowrap">{new Date(item.creationTime * 1000).toLocaleString()}</td>
                 <td className="px-6 py-4 whitespace-nowrap">{item.creator}</td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <button onClick={async () => {
-                    try {
-                      const response = await fetch(`/api/decryptFile?ipfsHash=${item.hash}&address=${address}&filename=${item.fileName}`);
-                      if (!response.ok) {
-                        throw new Error('Failed to download file');
-                      }
-                      const blob = await response.blob();
-                      const link = document.createElement('a');
-                      link.href = window.URL.createObjectURL(blob);
-                      link.download = item.fileName;
-                      link.click();
-                    } catch (error) {
-                      console.error(error);
-                    }
-                  }} className="text-indigo-600 hover:text-indigo-900">Download</button>
+                  <button onClick={() => { if (address && signer) { downloadFile(item.hash, item.fileName, address, signer) } }} className="text-indigo-600 hover:text-indigo-900">Download</button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-
     </>
   );
 };

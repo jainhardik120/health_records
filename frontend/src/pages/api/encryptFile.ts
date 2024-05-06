@@ -47,9 +47,8 @@ const handler: NextApiHandler = async (req: NextApiRequest, res: NextApiResponse
         hash
       })
     });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: error });
+  } catch (error : any) {
+    return res.status(500).json({ error: error.message || "Internel Server Error" });
   }
 }
 export default handler;

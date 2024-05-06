@@ -3,7 +3,6 @@
 import useSigner from "../../../app/state/signer";
 import { useEffect, useState } from "react"
 import { DisplayRecords } from "./DisplayRecords";
-import PendingRequests from "./PendingRequests";
 
 export type MedicalRecord = {
   hash: string,
@@ -18,7 +17,6 @@ const PatientHome: React.FC = () => {
   useEffect(() => {
     const getRecords = async () => {
       const res = await contract.getValidRecords();
-      console.log(res);
       setRecords(
         res.map((item: any[], i: any) => {
           return ({
