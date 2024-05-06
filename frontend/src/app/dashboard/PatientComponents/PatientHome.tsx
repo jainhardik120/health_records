@@ -1,9 +1,9 @@
 "use client"
 
+import useSigner from "../../../app/state/signer";
 import { useEffect, useState } from "react"
-import useSigner from "../state/signer"
-import PendingRequests from "./PendingRequests";
 import { DisplayRecords } from "./DisplayRecords";
+import PendingRequests from "./PendingRequests";
 
 export type MedicalRecord = {
   hash: string,
@@ -12,7 +12,7 @@ export type MedicalRecord = {
   creator : string
 }
 
-export default function Page() {
+const PatientHome: React.FC = () => {
   const { address, contract } = useSigner();
   const [Records, setRecords] = useState<MedicalRecord[]>([]);
   useEffect(() => {
@@ -37,7 +37,8 @@ export default function Page() {
   return (
     <div>
       <DisplayRecords Records={Records} address={address} />
-      <PendingRequests address={address} Records={Records}/>
     </div>
   )
 }
+
+export default PatientHome;

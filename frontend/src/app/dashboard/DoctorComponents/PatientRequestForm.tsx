@@ -1,9 +1,9 @@
+"use client"
+
 import React, { useState, useEffect } from 'react';
-import useSigner from '../state/signer';
-import TextInput from '../components/TextInput';
-import TextArea from '../components/TextArea';
-
-
+import useSigner from '../../state/signer';
+import TextInput from '../../components/TextInput';
+import TextArea from '../../components/TextArea';
 
 interface PatientRequestProps {
   closePopup: () => void

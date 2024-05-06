@@ -1,7 +1,7 @@
 "use client"
 
 import { ChangeEvent, FormEvent, useState } from "react";
-import TextInput from "../components/TextInput";
+import TextInput from "../../components/TextInput";
 import { TransactionResponse } from "ethers";
 import { Contract } from "ethers";
 

@@ -1,12 +1,10 @@
 "use client"
 
-import UploadFile from "./UploadFile";
-import useSigner from "../state/signer";
-import PatientRequestForm from "./PatientRequestForm";
-import PendingRequests from "./PendingRequests";
-import { useState, useEffect } from "react";
+import useSigner from "../../../app/state/signer";
+import React, { useState, useEffect } from "react";
 import RecordList from "./RecordList";
-import Button from "../components/Button";
+import UploadFile from "./UploadFile";
+import Button from "../../../app/components/Button";
 
 export type SharedRecord = {
   patient: string;
@@ -15,12 +13,10 @@ export type SharedRecord = {
   metahash: string;
 }
 
-export default function Page() {
+const DoctorHome: React.FC = () => {
   const { contract, address } = useSigner();
 
   const [uploadPopupOpened, setUploadPopupOpened] = useState(false);
-  const [patientRequestOpened, setPatientRequestOpened] = useState(false);
-
   const [Records, setRecords] = useState<SharedRecord[]>([]);
 
   useEffect(() => {
@@ -49,12 +45,11 @@ export default function Page() {
       {uploadPopupOpened && (
         <UploadFile contract={contract} closePopup={() => setUploadPopupOpened(false)} />
       )}
-      {patientRequestOpened && (
-        <PatientRequestForm closePopup={() => setPatientRequestOpened(false)} />
-      )}
-      <PendingRequests />
-      <Button onClick={() => setUploadPopupOpened(true)}>Upload File</Button>
-      <Button onClick={() => setPatientRequestOpened(true)}>Request</Button>
+      <div className="flex justify-center p-4">
+        <Button onClick={() => setUploadPopupOpened(true)}>Upload New Records</Button>
+      </div>
     </div>
   )
 }
+
+export default DoctorHome;

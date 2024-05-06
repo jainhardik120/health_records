@@ -45,14 +45,11 @@ export const SignerProvider = ({ children }: { children: ReactNode }) => {
 		}
 	}, [address]);
 
-
-
 	useEffect(() => {
 		const web3modal = new Web3Modal();
 		if (web3modal.cachedProvider) connectWallet();
 		window.ethereum.on("accountsChanged", connectWallet);
 	}, []);
-
 
 
 	const connectWallet = async () => {
@@ -71,7 +68,6 @@ export const SignerProvider = ({ children }: { children: ReactNode }) => {
 		setLoading(false);
 	};
 	const contextValue = { signer, address, loading, connectWallet, type, contract };
-
 
 	return (
 		<SignerContext.Provider value={contextValue}>
