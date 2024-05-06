@@ -1,9 +1,9 @@
 import { sql } from '@vercel/postgres';
-import { fetchFileFromIPFS, getKey, pinJSONToIPFS, uploadFileToIPFS } from "./../../../../helpers";
+import { ErrorResponse, fetchFileFromIPFS, getKey, pinJSONToIPFS, uploadFileToIPFS } from "./../../../../helpers";
 import { Readable } from 'stream';
 import { createCipheriv, createDecipheriv, randomBytes } from 'crypto';
 import pinataSDK from "@pinata/sdk";
-import { MedicalRecord } from '@/app/p/page';
+import { MedicalRecord } from '@/app/dashboard/PatientComponents/PatientHome';
 
 export async function POST(request: Request) {
   const pinata = new pinataSDK({ pinataJWTKey: process.env.PINATA_JWT_KEY });
@@ -54,7 +54,6 @@ export async function POST(request: Request) {
     });
     return new Response(JSON.stringify({hash : response}), { status: 200 });
   } catch (error) {
-    console.log(error);
-    return new Response(JSON.stringify(error), { status: 500 });
+    return ErrorResponse(error, 500);
   }
 }

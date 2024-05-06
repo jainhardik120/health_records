@@ -1,3 +1,4 @@
+import { ErrorResponse } from "@/helpers";
 import { sql } from "@vercel/postgres";
 
 export const dynamic = 'force-dynamic'
@@ -12,8 +13,6 @@ export async function GET(request: Request, { params }: { params: { address: str
       return Response.json({ isNew: false, type: rows[0].type });
     }
   } catch (error) {
-    return Response.json(error, {
-      status: 500
-    });
+    return ErrorResponse(error, 500);
   }
 }

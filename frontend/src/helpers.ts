@@ -4,7 +4,15 @@ import pinataSDK from "@pinata/sdk";
 import { ReadStream, createReadStream, createWriteStream } from 'fs';
 const pinata = new pinataSDK({ pinataJWTKey: process.env.PINATA_JWT_KEY });
 
-const uploadToLocal = async (fileStream: Readable) : Promise<string> => {
+export const ErrorResponse = (error: any, statusCode: number) => {
+  return new Response(JSON.stringify({ error: error.toString() }), { status: statusCode })
+}
+
+export const SuccessResponse = () => {
+  return new Response(JSON.stringify({ success: true }), { status: 201 })
+}
+
+const uploadToLocal = async (fileStream: Readable): Promise<string> => {
   const currentTime = new Date().getTime();
   const fileName = `file_${currentTime}_${Math.floor(Math.random() * 1000)}`;
   const filePath = `./uploads/${fileName}`;
@@ -74,7 +82,7 @@ export const getKey = async (address: string) => {
   return key;
 }
 
-export const pinJSONToIPFS = async (body : any)=>{
+export const pinJSONToIPFS = async (body: any) => {
   const response = await pinata.pinJSONToIPFS(body);
   return response.IpfsHash;
 }
