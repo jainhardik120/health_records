@@ -29,7 +29,7 @@ export default function Home() {
         <section id="get-started">
           <h2 id="get-started-head">Get Started</h2>
           <br/>
-          <p id="get-started-para">Ready to streamline your hospital's operations? Get started now!</p>
+          <p id="get-started-para">Ready to streamline your hospital &apos s operations? Get started now!</p>
         </section>
       </div>
 
