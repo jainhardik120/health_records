@@ -22,7 +22,6 @@ const DoctorHome: React.FC = () => {
   useEffect(() => {
     const getRecords = async () => {
       const res = await contract.getValidSharedRecords();
-      console.log(res);
       setRecords(
         res.map((item: any[], i: any) => {
           return ({

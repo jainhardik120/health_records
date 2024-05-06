@@ -5,7 +5,7 @@ interface TextInputProps {
   id: string;
   value: string;
   onChange: (value: string) => void;
-  className?: string; // Add className prop
+  className?: string; 
   list? : string
 }
 

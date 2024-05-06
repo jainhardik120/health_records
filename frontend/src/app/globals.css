@@ -54,6 +54,11 @@ li {
 .navbar-menu {
   display: flex;
   align-items: center;
+  color: #fff;
+}
+
+.navbar-menu a {
+  padding : 10px 20px
 }
 
 .navbar-button {
@@ -63,6 +68,12 @@ li {
   border-radius: 5px;
   color: #fff;
   cursor: pointer;
+}
+
+@media screen and (max-width : 836px) {
+  #wallet-address{
+    display: none;
+  }
 }
 
 .form-container {
