@@ -26,7 +26,6 @@ const handler: NextApiHandler = async (req: NextApiRequest, res: NextApiResponse
     const { rows } = await sql`SELECT * FROM keys WHERE address = ${data.address[0]}`;
     const publicKey: String = rows[0].key;
     const key = Buffer.from(publicKey, 'hex');
-    console.log(key);
     const algorithm = 'aes-256-cbc';
     const iv = randomBytes(16);
     const { filepath, originalFilename } = data.file[0];

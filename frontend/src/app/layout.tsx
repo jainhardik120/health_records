@@ -33,7 +33,7 @@ export default function RootLayout({
         <body className={inter.className}>
           <div className="app-container">
             <NavBar />
-            <div className="app-content">
+            <div className="app-content ">
               {children}
             </div>
             <ToastContainer

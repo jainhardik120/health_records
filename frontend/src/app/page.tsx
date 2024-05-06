@@ -1,38 +1,44 @@
 "use client"
 
+import Image from "next/image"
+import Snap1 from "./Snap1.png"
+import Snap2 from "./Snap2.png"
+
 export default function Home() {
   return (
-    <div className="container">
-      <div className="header">
-        <h1 id="heading">Welcome to Hospital Records Management System</h1>
-        <p id="head-para">Efficiently manage patient records, and more.</p>
-      </div>
-      <div className="image-container">
-        <img src="https://www.virginiawomenscenter.com/wp-content/uploads/2018/09/AdobeStock_136041571.jpeg"/>
-      </div>
-      <br/>
-      <div className="main">
-        <section>
-          <h2 id="feature-head">Features</h2>
-          <hr/>
-          <ol id="lists">
-            <li>Securely store and manage patient records</li>
-            <li>Upload patient records using patient ID</li>
-            <li>Request patient records</li>
-            <li>Track medical history and treatments</li>
-            <li>Approve or decline record requests from patients</li>
-            <li>Send records to approved requests</li>
-            <li>Access control for different users (doctors, patients)</li>
-            <li>Search and retrieve patient records efficiently</li>
-          </ol>
+    <>
+      <div className="bg-gradient-to-b from-black to-gray-900 text-white py-12">
+        <header className="h-screen flex items-center">
+          <div className="container mx-auto text-center">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-8 leading-snug">Your Trusted Medical Records Guardian</h1>
+            <p className="text-base sm:text-lg md:text-xl mb-8 leading-relaxed">Empowering patients and healthcare providers with secure, decentralized medical record management.</p>
+          </div>
+        </header>
+        <section className="h-screen flex items-center">
+          <div className="mx-auto w-4/5 flex flex-col md:flex-row items-center justify-center">
+            <div className="md:w-1/2 text-center md:text-left mb-8 md:mb-0">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold mb-8 leading-snug">Revolutionizing Healthcare with Blockchain Technology</h2>
+            <p className="text-base sm:text-lg md:text-xl leading-relaxed">HealthChain ensures privacy, security, and accessibility of medical data, revolutionizing the way healthcare information is managed and shared.</p>
+          </div>
+            <div className="md:w-1/2 max-h-svh text-center md:text-left">
+              <Image src={Snap2} alt="Code Snippet" layout="responsive" width={800} height={600} />
+            </div>
+          </div>
         </section>
-        <section id="get-started">
-          <h2 id="get-started-head">Get Started</h2>
-          <br/>
-          <p id="get-started-para">Ready to streamline your hospital &apos s operations? Get started now!</p>
+        <section className="h-screen flex items-center">
+          <div className="mx-auto w-4/5 flex flex-col md:flex-row items-center justify-center">
+            <div className="md:w-1/2 text-center md:text-left mb-8 md:mb-0">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold mb-4 leading-snug">Secure File Encryption with IPFS Integration</h2>
+              <p className="text-base sm:text-lg md:text-xl leading-relaxed">Before uploading files to IPFS, MediChain encrypts them using industry-standard encryption algorithms, ensuring maximum security and confidentiality.</p>
+            </div>
+            <div className="md:w-1/2 text-center md:text-left">
+              <Image src={Snap1} alt="Code Snippet" layout="responsive" width={800} height={600} />
+            </div>
+          </div>
         </section>
+
       </div>
 
-    </div>
+    </>
   )
-}
+};
