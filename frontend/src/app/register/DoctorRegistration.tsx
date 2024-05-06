@@ -122,7 +122,7 @@ export const DoctorRegistration = () => {
           onChange={setClinicContact}
         />
       </div>
-      <Button className="submit-btn" onClick={handleSubmit}>
+      <Button className="w-full" onClick={handleSubmit}>
         Register
       </Button>
       {error && <p className="error-message">{error}</p>}

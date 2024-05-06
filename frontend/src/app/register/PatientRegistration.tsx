@@ -152,7 +152,7 @@ const PatientRegistration = () => {
             onChange={setContact}
           />
         </div>
-        <Button className="submit-btn" onClick={handleSubmit}>
+        <Button className="w-full" onClick={handleSubmit}>
           Register
         </Button>
         {/* Error message */}
