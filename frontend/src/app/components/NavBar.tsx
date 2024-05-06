@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import useSigner from "../state/signer";
-import "../styles/navbar.css";
+import "../styles/homepage.css";
 import Link from "next/link";
 
 export default function NavBar() {
@@ -23,7 +23,11 @@ export default function NavBar() {
 					<Link href="/">Health Records App</Link>
 				</div>
 				<div className="navbar-menu">
-					<Link href="/dashboard/requests" className="text-white">Pending Requests</Link>
+					{type > 0 && (
+						<>
+							<Link href="/dashboard/requests" className="text-white">Pending Requests</Link>
+						</>
+					)}
 					<button className="navbar-button" onClick={headerButtonClick} disabled={loading || type == -1}>
 						{type === -1 ? "Loading..." : type === 0 ? "Register" : "Dashboard"}
 					</button>

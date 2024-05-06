@@ -1,6 +1,5 @@
 "use client"
 
-import "../app/styles/homepage.css"
 export default function Home() {
   return (
     <div className="container">

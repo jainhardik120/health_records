@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import Button from '../components/Button';
 import useSigner from '../state/signer';
 import TextInput from '../components/TextInput';
-import "../styles/patientregistration.css"
 
 export const DoctorRegistration = () => {
   const { address } = useSigner();
