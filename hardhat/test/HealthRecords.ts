@@ -64,6 +64,27 @@ describe("HealthRecords", function () {
     expect(patientRecords.length).to.equal(0);
   });
 
+  it("should handle large number of records for a patient", async function () {
+    const maxRecords = 100;
+    const hash = "dummy_hash";
+    const fileName = "medical_report.pdf";
+
+    for (let i = 0; i < maxRecords; i++) {
+      await healthRecords.createMedicalRecord(otherAccount as AddressLike, hash + i, fileName);
+    }
+
+    const patientRecords = await healthRecords.connect(otherAccount as ContractRunner).getValidRecords();
+    expect(patientRecords.length).to.equal(maxRecords);
+  });
+
+  it("should create a shared record with zero expiry time", async function () {
+    const hash = "dummy_hash";
+    const zeroExpiryTime = 0;
+    await healthRecords.createRecordCopy(otherAccount as AddressLike, hash, zeroExpiryTime);
+    const validRecords = await healthRecords.connect(otherAccount as ContractRunner).getValidSharedRecords();
+    expect(validRecords.length).to.equal(0);
+  });
+
   describe("should create shared records and check validity at different time intervals", async function () {
 
     this.beforeEach(async () => {
