@@ -3,6 +3,7 @@
 import useSigner from "@/app/state/signer";
 import { MedicalRecord } from "./PatientHome";
 import { downloadFile } from '@/downloadFile';
+import { AddressLink } from "../../components/AddressLink";
 
 interface DisplayRecordsProps {
   Records: MedicalRecord[],
@@ -30,7 +31,7 @@ export const DisplayRecords: React.FC<DisplayRecordsProps> = ({ Records, address
                 <td className="px-6 py-4 whitespace-nowrap">{item.hash}</td>
                 <td className="px-6 py-4 whitespace-nowrap">{item.fileName}</td>
                 <td className="px-6 py-4 whitespace-nowrap">{new Date(item.creationTime * 1000).toLocaleString()}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{item.creator}</td>
+                <td className="px-6 py-4 whitespace-nowrap"><AddressLink hash={item.creator} /></td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <button onClick={() => { if (address && signer) { downloadFile(item.hash, item.fileName, address, signer) } }} className="text-indigo-600 hover:text-indigo-900">Download</button>
                 </td>
@@ -41,4 +42,5 @@ export const DisplayRecords: React.FC<DisplayRecordsProps> = ({ Records, address
       </div>
     </>
   );
+
 };

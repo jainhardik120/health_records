@@ -6,21 +6,12 @@ const inter = Inter({ subsets: ["latin"] });
 import 'react-toastify/dist/ReactToastify.css'
 import "./globals.css"
 import { Slide, ToastContainer } from 'react-toastify';
+import { Footer } from "./components/Footer";
 
 export const metadata: Metadata = {
-  title: "Decentralised Health Records",
+  title: "HealthChain",
   description: "Minor Project II",
 };
-
-const Footer: React.FC = () => {
-  return (
-    <>
-      <footer className="footer">
-        <p className="text-white">&copy; 2024 Hospital Records Management System</p>
-      </footer>
-    </>
-  )
-}
 
 export default function RootLayout({
   children,

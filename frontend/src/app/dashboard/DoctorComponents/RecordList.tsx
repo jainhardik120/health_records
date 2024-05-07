@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import RecordDetails from './RecordDetails';
+import { AddressLink } from '@/app/components/AddressLink';
 
 export interface Record {
   patient: string;
@@ -39,7 +40,7 @@ const RecordList: React.FC<RecordListProps> = ({ records }) => {
           <tbody className="bg-white divide-y divide-gray-200">
             {records.map((record, index) => (
               <tr key={index}>
-                <td className="px-6 py-4 whitespace-nowrap">{record.patient}</td>
+                <td className="px-6 py-4 whitespace-nowrap"><AddressLink hash={record.patient} /></td>
                 <td className="px-6 py-4 whitespace-nowrap">{new Date(record.creationTime * 1000).toLocaleString()}</td>
                 <td className="px-6 py-4 whitespace-nowrap">{new Date((record.expiryTime + record.creationTime) * 1000).toLocaleString()}</td>
                 <td className="px-6 py-4 whitespace-nowrap">{record.metahash}</td>

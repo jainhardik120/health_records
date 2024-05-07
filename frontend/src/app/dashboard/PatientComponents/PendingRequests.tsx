@@ -8,6 +8,7 @@ import Button from '../../components/Button';
 import { MedicalRecord } from './PatientHome';
 import { toast } from 'react-toastify';
 import { randomBytes, sign } from 'crypto';
+import { AddressLink } from '@/app/components/AddressLink';
 
 
 type Request = {
@@ -152,7 +153,7 @@ const PendingRequests: React.FC = () => {
           <tbody className="bg-white divide-y divide-gray-200">
             {pendingRequests && pendingRequests.length > 0 && pendingRequests.map((request: any) => (
               <tr key={request.request_id}>
-                <td className="px-6 py-4 whitespace-nowrap">{request.doctor_address}</td>
+                <td className="px-6 py-4 whitespace-nowrap"><AddressLink hash={request.doctor_address} /></td>
                 <td className="px-6 py-4 whitespace-nowrap">{request.message}</td>
                 <td className="px-6 py-4 whitespace-nowrap">{new Date(request.request_datetime).toLocaleString()}</td>
                 <td className="px-6 py-4 whitespace-nowrap">
@@ -168,7 +169,7 @@ const PendingRequests: React.FC = () => {
         <div className="popup-container">
           <div className="popup">
             <div className="mb-4">
-              <p className="text-gray-800 font-semibold">Doctor: {selectedRequest.doctor_address}</p>
+              <p className="text-gray-800 font-semibold">Doctor: <AddressLink hash={selectedRequest.doctor_address} /></p>
               <p className="text-gray-600">Message: {selectedRequest.message}</p>
               <p className="text-gray-600">Date Time: {new Date(selectedRequest.request_datetime).toLocaleString()}</p>
             </div>

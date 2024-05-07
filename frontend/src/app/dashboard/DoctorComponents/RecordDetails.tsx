@@ -6,6 +6,7 @@ import useSigner from '../../state/signer';
 import Button from '../../components/Button';
 import { toast } from 'react-toastify';
 import { downloadFile } from '@/downloadFile';
+import { AddressLink } from '@/app/components/AddressLink';
 
 interface SharedRecord {
   hash: string;
@@ -47,7 +48,7 @@ const RecordDetails: React.FC<RecordDetailsProps> = ({ selectedRecord, closePopu
         <div className="popup">
           <div className="p-4">
             <h3 className="text-xl font-semibold mb-2">Record Details</h3>
-            <p className="text-gray-700">Patient: {selectedRecord.patient}</p>
+            <p className="text-gray-700">Patient: <AddressLink hash={selectedRecord.patient} /></p>
             <p className="text-gray-700">Creation Time: {new Date(selectedRecord.creationTime * 1000).toLocaleString()}</p>
             <p className="text-gray-700">Expiry Time: {new Date((selectedRecord.expiryTime + selectedRecord.creationTime) * 1000).toLocaleString()}</p>
             <p className="text-gray-700">Metahash: {selectedRecord.metahash}</p>
@@ -59,7 +60,7 @@ const RecordDetails: React.FC<RecordDetailsProps> = ({ selectedRecord, closePopu
                   <tr key={index}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <p className="text-gray-800 font-semibold">File Name: {record.fileName}</p>
-                      <p className="text-gray-600">Creator: {record.creator}</p>
+                      <p className="text-gray-600">Creator: <AddressLink hash={record.creator} /></p>
                       <p className="text-gray-600">Creation Time: {new Date(record.creationTime).toLocaleString()}</p>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">

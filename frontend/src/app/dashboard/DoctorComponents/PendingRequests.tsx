@@ -5,6 +5,7 @@ import useSigner from '../../state/signer';
 import Button from '@/app/components/Button';
 import PatientRequestForm from './PatientRequestForm';
 import { toast } from 'react-toastify';
+import { AddressLink } from '@/app/components/AddressLink';
 
 const PendingRequests: React.FC = () => {
   const [pendingRequests, setPendingRequests] = useState([]);
@@ -45,7 +46,7 @@ const PendingRequests: React.FC = () => {
           <tbody className="bg-white divide-y divide-gray-200">
             {pendingRequests && pendingRequests.length > 0 && pendingRequests.map((request: any) => (
               <tr key={request.request_id}>
-                <td className="px-6 py-4 whitespace-nowrap">{request.patient_address}</td>
+                <td className="px-6 py-4 whitespace-nowrap"><AddressLink hash={request.patient_address} /></td>
                 <td className="px-6 py-4 whitespace-nowrap">{request.message}</td>
                 <td className="px-6 py-4 whitespace-nowrap">{new Date(request.request_datetime).toLocaleString()}</td>
               </tr>
