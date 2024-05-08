@@ -4,14 +4,15 @@ import { createContext, useContext, ReactNode, useState, useEffect } from "react
 import { JsonRpcSigner, BrowserProvider, Contract } from "ethers";
 import Web3Modal from "web3modal";
 import HealthRecords from "../../artifacts/contracts/HealthRecords.sol/HealthRecords.json";
+import { toast } from "react-toastify";
 
 type SignerContextType = {
 	signer?: JsonRpcSigner;
 	address?: string;
 	loading: boolean;
-	type : number;
+	type: number;
 	connectWallet: () => Promise<void>;
-	contract : Contract;
+	contract: Contract;
 }
 
 const SignerContext = createContext<SignerContextType>({} as any);
@@ -24,7 +25,7 @@ export const SignerProvider = ({ children }: { children: ReactNode }) => {
 	const [loading, setLoading] = useState(false);
 	const [type, setType] = useState(-1);
 	const contract = new Contract("0x6F9C43aC61E24A040303Fb755199b9F6F1FAF054", HealthRecords.abi, signer);
-	
+
 	useEffect(() => {
 		const getType = async () => {
 			try {
@@ -48,7 +49,11 @@ export const SignerProvider = ({ children }: { children: ReactNode }) => {
 	useEffect(() => {
 		const web3modal = new Web3Modal();
 		if (web3modal.cachedProvider) connectWallet();
-		window.ethereum.on("accountsChanged", connectWallet);
+		if (!window.ethereum) {
+			toast.error("Metamask is not installed in your browser");
+		} else {
+			window.ethereum.on("accountsChanged", connectWallet);
+		}
 	}, []);
 
 

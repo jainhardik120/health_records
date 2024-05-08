@@ -25,4 +25,5 @@ export const downloadFile = async (itemhash: string, filename: string, taddress:
   } catch (error: any) {
     toast.update(id, { render: error.message, type: "error", isLoading: false });
   }
+  toast.dismiss(id);
 };
