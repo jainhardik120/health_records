@@ -49,26 +49,36 @@ const fetchFromLocal = async (ipfsHash: string): Promise<ArrayBuffer> => {
   });
 };
 
+const fetchFromIPFS = async (ipfsHash: string) => {
+  const res = await fetch(`https://gateway.pinata.cloud/ipfs/${ipfsHash}`);
+  if (!res.ok) {
+    throw new Error(`Failed to fetch file from IPFS. Status: ${res.status}`);
+  }
+  return res.arrayBuffer();
+};
+
+
+const uploadToIPFS = async (fileStream: Readable, fileName: string) => {
+  const pinataRes = await pinata.pinFileToIPFS(fileStream, {
+    pinataMetadata: {
+      name: fileName
+    },
+    pinataOptions: {
+      cidVersion: 0
+    }
+  })
+  return pinataRes.IpfsHash
+}
+
 export const fetchFileFromIPFS = async (ipfsHash: string) => {
   return fetchFromLocal(ipfsHash);
-  // const res = await fetch(`https://gateway.pinata.cloud/ipfs/${ipfsHash}`);
-  // if (!res.ok) {
-  //   throw new Error(`Failed to fetch file from IPFS. Status: ${res.status}`);
-  // }
-  // return res.arrayBuffer();
+  return fetchFromIPFS(ipfsHash);
 };
+
 
 export const uploadFileToIPFS = async (fileStream: Readable, fileName: string) => {
   return uploadToLocal(fileStream);
-  // const pinataRes = await pinata.pinFileToIPFS(fileStream, {
-  //   pinataMetadata: {
-  //     name: fileName
-  //   },
-  //   pinataOptions: {
-  //     cidVersion: 0
-  //   }
-  // })
-  // return pinataRes.IpfsHash
+  return uploadToIPFS(fileStream, fileName);
 }
 
 
